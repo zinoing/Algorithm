@@ -1,4 +1,4 @@
-// 버블 정렬로 구현
+// bubble sort로 구현
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
@@ -214,5 +214,94 @@ int main(void) {
     }
     locations.quickSort(locations.getArray(), 0, n-1);
     locations.show();
+    return 0;
+}
+
+// merge sort로 구현
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+
+class Pos {
+public:
+    int xPos = 0;
+    int yPos = 0;
+
+    Pos& operator= (const Pos& pos) {
+        this->xPos = pos.xPos;
+        this->yPos = pos.yPos;
+        return *this;
+    }
+};
+
+Pos array[100001] = { 0, };
+Pos* array2;
+
+void merge(int left, int mid, int right) {
+    int i, j, k;
+    i = left;
+    j = mid + 1;
+    k = left;
+
+    while (1) {
+        if (i > mid || j > right)
+            break;
+
+        if (array[i].yPos < array[j].yPos) {
+            array2[k++] = array[i++];
+        }
+        else if (array[i].yPos > array[j].yPos) {
+            array2[k++] = array[j++];
+        }
+        else {
+            if (array[i].xPos < array[j].xPos) {
+                array2[k++] = array[i++];
+            }
+            else {
+                array2[k++] = array[j++];
+            }
+        }
+    }
+
+    while (i <= mid) {
+        array2[k++] = array[i++];
+    }
+
+    while (j <= right) {
+        array2[k++] = array[j++];
+    }
+
+    for (int i = left; i <= right; i++) {
+        array[i] = array2[i];
+    }
+}
+
+void partition(int left, int right) {
+    int mid = (left + right) / 2;
+    if (left < right) {
+        partition(left, mid);
+        partition(mid + 1, right);
+        merge(left, mid, right);
+    }
+    return;
+}
+
+int main(void) {
+    int n = 0;
+    scanf("%d", &n);
+
+    array2 = new Pos[n];
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d %d", &array[i].xPos, &array[i].yPos);
+    }
+
+    partition(0, n-1);
+    
+    for (int i = 0; i < n; i++) {
+        printf("%d %d \n", array[i].xPos, array[i].yPos);
+    }
+
+    delete[] array2;
     return 0;
 }
